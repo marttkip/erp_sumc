@@ -649,6 +649,7 @@ class Nurse  extends MX_Controller
 	public function save_nurse_notes($visit_id)
 	{
 		$signature_name = '';
+		$personnel_id = $this->session->userdata('personnel_id');
 		if(isset($_POST['signature']))
 		{
 			$this->load->library('signature/signature');
@@ -662,10 +663,10 @@ class Nurse  extends MX_Controller
 			//imagedestroy($img);
 		}
 		
-		if($this->nurse_model->add_notes($visit_id, $signature_name))
+		if($this->nurse_model->add_notes($visit_id, 1, $signature_name, $personnel_id))
 		{
 			$v_data['signature_location'] = $this->signature_location;
-			$v_data['query'] = $this->nurse_model->get_notes(1);
+			$v_data['query'] = $this->nurse_model->get_notes(1, $visit_id);
 			$return['result'] = 'success';
 			$return['message'] = $this->load->view('patients/notes', $v_data, TRUE);
 			echo 'success';

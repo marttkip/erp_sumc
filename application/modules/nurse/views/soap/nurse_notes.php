@@ -13,21 +13,33 @@ $v_data['mobile_personnel_id'] = $mobile_personnel_id;
 $notes = $this->load->view('nurse/patients/notes', $v_data, TRUE);
 
 echo '<div id="nurse_notes_section">'.$notes.'</div>';
-echo form_open('nurse/save_nurse_notes/'.$visit_id, array('id' => 'canvas_form'));
+echo form_open('nurse/save_nurse_notes/'.$visit_id, array('id' => 'nurse_notes_form', 'visit_id' => $visit_id));
 	
 echo
 '	<div class="row">
 		<div class="col-sm-6" >
 			<div class="form-group">
 				<label class="control-label">Date</label>
-				<input type="date" name="date" class="form-control">
+				<div id="datetimepicker1" class="input-append">
+					<input data-format="yyyy-MM-dd" class="form-control" type="date" name="date" placeholder="Date" value="'.date('Y-m-d').'">
+					<span class="add-on">
+						&nbsp;<i data-time-icon="icon-time" data-date-icon="icon-calendar">
+						</i>
+					</span>
+				</div>
 			</div>
 		</div>
 		
 		<div class="col-sm-6" >
 			<div class="form-group">
 				<label class="control-label">Time</label>
-				<input type="time" name="time" class="form-control">
+				<div id="datetimepicker1" class="input-append">
+					<input data-format="yyyy-MM-dd" class="form-control" type="time" name="date" placeholder="Time" value="'.date('H:i:s').'">
+					<span class="add-on">
+						&nbsp;<i data-time-icon="icon-time" data-date-icon="icon-calendar">
+						</i>
+					</span>
+				</div>
 			</div>
 		</div>
 	</div>';
@@ -83,8 +95,10 @@ echo form_close();
 ?>
 
 <script type="text/javascript">
-	
-	function save_nurse_notes(visit_id){
+	$(document).on("submit", "form#nurse_notes_form", function (e) 
+	{
+		e.preventDefault();
+		var visit_id = '<?php echo $visit_id;?>';
 		var config_url = $('#config_url').val();
         var data_url = config_url+"nurse/save_nurse_notes/"+visit_id;
         //window.alert(data_url);
@@ -104,7 +118,6 @@ echo form_close();
 			}
 
         });
-
-		
-	}
+		return false;
+	})
 </script>

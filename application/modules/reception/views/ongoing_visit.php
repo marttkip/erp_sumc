@@ -47,7 +47,7 @@
 		
 		if(!empty($search))
 		{
-			echo '<a href="'.site_url().'/reception/close_visit_search/'.$visit.'/'.$page_name.'" class="btn btn-warning">Close Search</a>';
+			echo '<a href="'.site_url().'reception/close_visit_search/'.$visit.'/'.$page_name.'" class="btn btn-warning">Close Search</a>';
 		}
 		$result = '';
 		
@@ -194,47 +194,47 @@
 						if($page_name == 'doctor')
 						{
 							$button = '
-							<td><a href="'.site_url().'/nurse/patient_card/'.$visit_id.'/a/1" class="btn btn-sm btn-info">Patient Card</a></td>
-							<td><a href="'.site_url().'/nurse/dental_visit/'.$visit_id.'/a/1" class="btn btn-sm btn-danger">Dental Vitals</a></td>
-							<td><a href="'.site_url().'/nurse/send_to_labs/'.$visit_id.'" class="btn btn-sm btn-success" onclick="return confirm(\'Send to lab?\');">To Lab</a></td>
-							<td><a href="'.site_url().'/nurse/send_to_pharmacy/'.$visit_id.'" class="btn btn-sm btn-primary" onclick="return confirm(\'Send to pharmacy?\');">To Pharmacy</a></td>
+							<td><a href="'.site_url().'nurse/patient_card/'.$visit_id.'/a/1" class="btn btn-sm btn-info">Patient Card</a></td>
+							<td><a href="'.site_url().'nurse/dental_visit/'.$visit_id.'/a/1" class="btn btn-sm btn-danger">Dental Vitals</a></td>
+							<td><a href="'.site_url().'nurse/send_to_labs/'.$visit_id.'" class="btn btn-sm btn-success" onclick="return confirm(\'Send to lab?\');">To Lab</a></td>
+							<td><a href="'.site_url().'nurse/send_to_pharmacy/'.$visit_id.'" class="btn btn-sm btn-primary" onclick="return confirm(\'Send to pharmacy?\');">To Pharmacy</a></td>
 							';
 						}
 						
 						else if($page_name == 'dental')
 						{
 							$button = '
-							<td><a href="'.site_url().'/dental/patient_card/'.$visit_id.'" class="btn btn-sm btn-success">Patient Card</a></td>
-							<td><a href="'.site_url().'/dental/send_to_account/'.$visit_id.'" class="btn btn-sm btn-primary" onclick="return confirm(\'Send to accounts?\');">To Account</a></td>
+							<td><a href="'.site_url().'dental/patient_card/'.$visit_id.'" class="btn btn-sm btn-success">Patient Card</a></td>
+							<td><a href="'.site_url().'dental/send_to_account/'.$visit_id.'" class="btn btn-sm btn-primary" onclick="return confirm(\'Send to accounts?\');">To Account</a></td>
 							';
 						}
 						
 						else if($page_name == 'nurse')
 						{
 							$button = '
-							<td><a href="'.site_url().'/nurse/patient_card/'.$visit_id.'/a/0" class="btn btn-sm btn-info">Patient Card</a></td>
-							<td><a href="'.site_url().'/nurse/dental_visit/'.$visit_id.'/a/0" class="btn btn-sm btn-danger">Dental Vitals</a></td>
+							<td><a href="'.site_url().'nurse/patient_card/'.$visit_id.'/a/0" class="btn btn-sm btn-info">Patient Card</a></td>
+							<td><a href="'.site_url().'nurse/dental_visit/'.$visit_id.'/a/0" class="btn btn-sm btn-danger">Dental Vitals</a></td>
 
-							<td><a href="'.site_url().'/nurse/send_to_doctor/'.$visit_id.'" class="btn btn-sm btn-warning" onclick="return confirm(\'Send to doctor?\');">To Doctor</a></td>
-							<td><a href="'.site_url().'/nurse/send_to_labs/'.$visit_id.'" class="btn btn-sm btn-success" onclick="return confirm(\'Send to lab?\');">To Lab</a></td>
-							<td><a href="'.site_url().'/nurse/send_to_pharmacy/'.$visit_id.'" class="btn btn-sm btn-primary" onclick="return confirm(\'Send to pharmacy?\');">To Pharmacy</a></td>
+							<td><a href="'.site_url().'nurse/send_to_doctor/'.$visit_id.'" class="btn btn-sm btn-warning" onclick="return confirm(\'Send to doctor?\');">To Doctor</a></td>
+							<td><a href="'.site_url().'nurse/send_to_labs/'.$visit_id.'" class="btn btn-sm btn-success" onclick="return confirm(\'Send to lab?\');">To Lab</a></td>
+							<td><a href="'.site_url().'nurse/send_to_pharmacy/'.$visit_id.'" class="btn btn-sm btn-primary" onclick="return confirm(\'Send to pharmacy?\');">To Pharmacy</a></td>
 							';
 						}
 						
 						else
 						{
-							$button = '<td><a href="'.site_url().'/reception/end_visit/'.$visit_id.'/'.$visit.'" class="btn btn-sm btn-info" onclick="return confirm(\'Do you really want to end this visit ?\');">End Visit</a></td>
-								<td><a href="'.site_url().'/reception/delete_visit/'.$visit_id.'/'.$visit.'" class="btn btn-sm btn-danger" onclick="return confirm(\'Do you really want to delete this visit?\');">Delete</a></td>';
+							$button = '<td><a href="'.site_url().'reception/end_visit/'.$visit_id.'/'.$visit.'" class="btn btn-sm btn-info" onclick="return confirm(\'Do you really want to end this visit ?\');">End Visit</a></td>
+								<td><a href="'.site_url().'reception/delete_visit/'.$visit_id.'/'.$visit.'" class="btn btn-sm btn-danger" onclick="return confirm(\'Do you really want to delete this visit?\');">Delete</a></td>';
 								
 							//if staff was registered as other
 							if(($visit_table_visit_type == 2) && ($patient_table_visit_type != $visit_table_visit_type))
 							{
-								$button .= '<td><a href="'.site_url().'/reception/change_patient_type/'.$patient_id.'" class="btn btn-sm btn-warning" onclick="return confirm(\'Do you really want to change this patient type?\');">Change Patient Type</a></td>';
+								$button .= '<td><a href="'.site_url().'reception/change_patient_type/'.$patient_id.'" class="btn btn-sm btn-warning" onclick="return confirm(\'Do you really want to change this patient type?\');">Change Patient Type</a></td>';
 							}
 							//if student was registered as other
 							else if(($visit_table_visit_type == 1) && ($patient_table_visit_type != $visit_table_visit_type))
 							{
-								$button .= '<td><a href="'.site_url().'/reception/change_patient_type/'.$patient_id.'" class="btn btn-sm btn-warning" onclick="return confirm(\'Do you really want to change this patient type?\');">Change Patient Type</a></td>';
+								$button .= '<td><a href="'.site_url().'reception/change_patient_type/'.$patient_id.'" class="btn btn-sm btn-warning" onclick="return confirm(\'Do you really want to change this patient type?\');">Change Patient Type</a></td>';
 							}
 							
 							else
@@ -271,7 +271,7 @@
 								<td>'.$visit_time.'</td>
 								<td>'.$visit_time_out.'</td>
 								<td>'.$doctor.'</td>
-								<td><a href="'.site_url().'/reception/delete_visit/'.$visit_id.'/'.$visit.'" class="btn btn-sm btn-danger" onclick="return confirm(\'Do you really want to delete this visit?\');">Delete</a></td>
+								<td><a href="'.site_url().'reception/delete_visit/'.$visit_id.'/'.$visit.'" class="btn btn-sm btn-danger" onclick="return confirm(\'Do you really want to delete this visit?\');">Delete</a></td>
 							</tr> 
 						';
 					}
