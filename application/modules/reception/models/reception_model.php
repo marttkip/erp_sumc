@@ -592,7 +592,7 @@ class Reception_model extends CI_Model
 			$table = "patients";
 			$where = "patient_id = ".$patient_id;
 			$items = "*";
-			$order = "patient_surname";
+			$order = "patient_date";
 		}
 		
 		else
@@ -600,13 +600,15 @@ class Reception_model extends CI_Model
 			$table = "patients, visit";
 			$where = "patients.patient_id = visit.patient_id AND visit.visit_id = ".$visit_id;
 			$items = "patients.*, visit.visit_type,visit.close_card";
-			$order = "patient_surname";
+			$order = "patient_date";
 		}
 
+		$this->db->select($items);
+		$this->db->where($where);
+		$this->db->order_by($order, 'DESC');
+		$result = $this->db->get($table);
 		
-		$result = $this->database->select_entries_where($table, $where, $items, $order);
-		
-		foreach ($result as $row)
+		foreach ($result->result() as $row)
 		{
 			$patient_id = $row->patient_id;
 			$dependant_id = $row->dependant_id;
@@ -619,10 +621,11 @@ class Reception_model extends CI_Model
 			$created = $row->patient_date;
 			$last_modified = $row->last_modified;
 			$last_visit = $row->last_visit;
-			$close_card = $row->close_card;
+			$close_card = 0;
 			
 			if($visit_id != NULL)
 			{
+				$close_card = $row->close_card;
 				$visit_type = $row->visit_type;
 				$check_id = $visit_type;
 				
