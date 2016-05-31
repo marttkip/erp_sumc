@@ -2615,4 +2615,5 @@ class Reception_model extends CI_Model
 		return $return;
 	}
 }
+
 ?>

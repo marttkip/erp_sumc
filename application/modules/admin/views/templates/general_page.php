@@ -86,27 +86,25 @@
 		<!-- Theme Custom -->
 		<script src="<?php echo base_url()."assets/themes/porto-admin/1.4.1/";?>assets/javascripts/theme.custom.js"></script>
 		
-
-		<!-- Script for this page -->
-		<script type="text/javascript">
-		$(function () {
-
-		    
-
-		});
-		</script>
-        
 <link rel="stylesheet" href="<?php echo base_url()."assets/themes/bluish";?>/style/jquery.cleditor.css"> 
 <!--<script src="<?php echo base_url()."assets/themes/bluish";?>/js/jquery.cleditor.min.js"></script> --> <!-- CLEditor -->
 		<script type="text/javascript" src="<?php echo base_url();?>assets/themes/tinymce/tinymce.min.js"></script>
 		 <script src='<?php echo base_url()."assets/bluish/"?>src/jquery-customselect.js'></script>
 	    <link href='<?php echo base_url()."assets/bluish/"?>src/jquery-customselect.css' rel='stylesheet' />
         <script type="text/javascript">
-            tinymce.init({
-                selector: ".cleditor"
-            });
-        </script>
+		$( document ).ready(function() {
+			$('#nurse_date').datetimepicker({
+				pickTime: false
+			});
+			
+			$('#nurse_time').datetimepicker({
+				pickDate: false
+			});
+		});
+			
+		tinymce.init({
+			selector: ".cleditor"
+		});
+		</script>
 	</body>
 </html>
-
-

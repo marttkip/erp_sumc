@@ -662,19 +662,21 @@ class Nurse  extends MX_Controller
 			imagepng($img, $this->signature_path.'\\'.$image_name);
 			//imagedestroy($img);
 		}
-		
+		//var_dump($personnel_id); die();
 		if($this->nurse_model->add_notes($visit_id, 1, $signature_name, $personnel_id))
 		{
 			$v_data['signature_location'] = $this->signature_location;
+			$v_data['mobile_personnel_id'] = '';
 			$v_data['query'] = $this->nurse_model->get_notes(1, $visit_id);
 			$return['result'] = 'success';
 			$return['message'] = $this->load->view('patients/notes', $v_data, TRUE);
-			echo 'success';
+			echo json_encode($return);
 		}
 		
 		else
 		{
-			echo 'fail';
+			$return['result'] = 'false';
+			echo json_encode($return);
 		}
 		// end of things to do with the trail
 	}
@@ -1608,32 +1610,71 @@ class Nurse  extends MX_Controller
 
 
 		$notes=$this->input->post('notes');
-
+		$personnel_id = $this->session->userdata('personnel_id');
 		$patient_id = $this->nurse_model->get_patient_id($visit_id);
 		$rs = $this->nurse_model->get_doctor_notes($patient_id);
 		$num_doc_notes = count($rs);
+		if($this->nurse_model->add_notes($visit_id, 2, $signature_name = '', $personnel_id))
+		{
+			$v_data['signature_location'] = $this->signature_location;
+			$v_data['mobile_personnel_id'] = '';
+			$v_data['query'] = $this->nurse_model->get_notes(2, $visit_id);
+			$return['result'] = 'success';
+			$return['message'] = $this->load->view('patients/notes', $v_data, TRUE);
+			echo json_encode($return);
+		}
 		
-		if($num_doc_notes == 0){	
-			$visit_data = array('patient_id'=>$patient_id,'doctor_notes'=>$notes);
-			$this->db->insert('doctor_notes', $visit_data);
-
+		else
+		{
+			$return['result'] = 'false';
+			echo json_encode($return);
 		}
-		else {
-			$visit_data = array('patient_id'=>$patient_id,'doctor_notes'=>$notes);
-			$this->db->where('patient_id',$patient_id);
-			$this->db->update('doctor_notes', $visit_data);
-		}
-
-		//  enter into the nurse notes trail
-		$trail_data = array(
-        		"patient_id" => $patient_id,
-        		"doctor_notes" => $notes,
-        		"added_by" => $this->session->userdata("personnel_id"),
-        		"visit_id" => $visit_id,
-        		"created" => date("Y-m-d")
+		/*if($num_doc_notes == 0){	
+			//$visit_data = array('patient_id'=>$patient_id,'doctor_notes'=>$notes);
+			//$this->db->insert('doctor_notes', $visit_data);
+			$trail_data = array(
+					"patient_id" => $patient_id,
+					"doctor_notes" => $notes,
+					"added_by" => $this->session->userdata("personnel_id"),
+					"visit_id" => $visit_id,
+					"created" => date("Y-m-d")
 	    		);
 
-		$this->db->insert('doctor_patient_notes', $trail_data);
+			if($this->db->insert('doctor_patient_notes', $trail_data))
+			{
+				echo 'success';
+			}
+			
+			else
+			{
+				echo 'false';
+			}
+		}
+		else {
+			//$visit_data = array('patient_id'=>$patient_id,'doctor_notes'=>$notes);
+			//$this->db->where('patient_id',$patient_id);
+			//$this->db->update('doctor_notes', $visit_data);
+			$trail_data = array(
+					"doctor_notes" => $notes,
+					"added_by" => $this->session->userdata("personnel_id"),
+					"visit_id" => $visit_id,
+					"created" => date("Y-m-d")
+	    		);
+
+			$this->db->where('patient_id',$patient_id);
+			if($this->db->update('doctor_patient_notes', $trail_data))
+			{
+				echo 'success';
+			}
+			
+			else
+			{
+				echo 'false';
+			}
+		}*/
+
+		//  enter into the nurse notes trail
+		
 		// end of things to do with the trail
 
 	}

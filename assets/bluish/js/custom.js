@@ -370,6 +370,12 @@ $(document).ready(function(){
     });
   });
 
+   $(function() {
+    $('#datetimepicker2').datetimepicker({
+      pickDate: false
+    });
+  });
+
   $(function() {
     $('#datetimepicker4').datetimepicker({
       pickTime: false
@@ -385,12 +391,6 @@ $(document).ready(function(){
   $(function() {
     $('#datetimepicker_other_patient').datetimepicker({
       pickTime: false
-    });
-  });
-
-   $(function() {
-    $('#datetimepicker2').datetimepicker({
-      pickDate: false
     });
   });
 

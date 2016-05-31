@@ -355,7 +355,22 @@ $data['lab_test'] = 100;
             <div class="widget-content">
               <div class="padd">
                 <!-- visit Procedures from java script -->
-                <?php echo $this->load->view("nurse/soap/nurse_notes", $data, TRUE); ?>
+                <?php 
+				
+				$v_data['signature_location'] = base_url().'assets/signatures/';
+				$v_data['query'] = $this->nurse_model->get_notes(1, $visit_id);
+				
+				if(!isset($mobile_personnel_id))
+				{
+					$mobile_personnel_id = NULL;
+				}
+				$v_data['mobile_personnel_id'] = $mobile_personnel_id;
+				
+				$notes = $this->load->view('nurse/patients/notes', $v_data, TRUE);
+				
+				echo '<div id="soap_nurse_notes_section">'.$notes.'</div>';
+				
+				?>
                 <!-- end of visit procedures -->
             </div>
           </div>
@@ -477,21 +492,51 @@ function save_doctor_notes(visit_id){
       var config_url = $('#config_url').val();
         var data_url = config_url+"nurse/save_doctor_notes/"+visit_id;
         //window.alert(data_url);
-         var doctor_notes = $('#doctor_notes_item').val();//document.getElementById("vital"+vital_id).value;
-        $.ajax({
-        type:'POST',
-        url: data_url,
-        data:{notes: doctor_notes},
-        dataType: 'text',
-        success:function(data){
-        //obj.innerHTML = XMLHttpRequestObject.responseText;
-        },
-        error: function(xhr, status, error) {
-        //alert("XMLHttpRequest=" + xhr.responseText + "\ntextStatus=" + status + "\nerrorThrown=" + error);
-        alert(error);
-        }
-
-        });
+		console.debug(tinymce.activeEditor.getContent());
+	   	var doctor_notes = tinymce.get('doctor_notes_item').getContent();
+		 var doctor_notes_date = $('#doctor_notes_date').val();
+		 var doctor_notes_time = $('#doctor_notes_time').val();
+        //var doctor_notes = $('#doctor_notes_item').val();//document.getElementById("vital"+vital_id).value;
+		
+		if(doctor_notes_date != '')
+		{
+			if(doctor_notes_time != '')
+			{
+				$.ajax({
+					type:'POST',
+					url: data_url,
+					data:{notes: doctor_notes, date: doctor_notes_date, time: doctor_notes_time},
+					dataType: 'json',
+					success:function(data){
+						if(data.result == 'success')
+						{
+							$('#doctor_notes_section').html(data.message);
+							alert("You have successfully updated the doctors' notes");
+						}
+						else
+						{
+							alert("Unable to update the doctors' notes");
+						}
+					//obj.innerHTML = XMLHttpRequestObject.responseText;
+					},
+					error: function(xhr, status, error) {
+						//alert("XMLHttpRequest=" + xhr.responseText + "\ntextStatus=" + status + "\nerrorThrown=" + error);
+						alert(error);
+					}
+		
+				});
+			}
+		
+			else
+			{
+				alert('Please select the notes time');
+			}
+		}
+		
+		else
+		{
+			alert('Please select the notes date');
+		}
 
       
 }

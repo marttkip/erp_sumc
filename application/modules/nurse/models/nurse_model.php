@@ -908,10 +908,10 @@ class Nurse_model extends CI_Model
 		return $query;
 	}
 	function get_doctor_notes($patient_id){
-		$table = "doctor_notes";
+		$table = "doctor_patient_notes";
 		$where = "patient_id = ".$patient_id;
 		$items = "*";
-		$order = "doctor_note_id";
+		$order = "doctor_notes";
 		
 		$result = $this->database->select_entries_where($table, $where, $items, $order);
 		
@@ -1626,7 +1626,7 @@ class Nurse_model extends CI_Model
 	
 	public function add_notes($visit_id, $notes_type_id, $signature_name, $personnel_id)
 	{
-		$notes=$this->input->post('nurse_notes');
+		$notes=$this->input->post('notes');
 		$date=$this->input->post('date');
 		$time=$this->input->post('time');
 
