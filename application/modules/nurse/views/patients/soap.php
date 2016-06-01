@@ -747,28 +747,46 @@ function open_objective_findings(visit_id){
 }
 
 
-function save_assessment(visit_id){
- 
-  var config_url = $('#config_url').val();
-  var data_url = config_url+"nurse/save_assessment/"+visit_id;
-  //window.alert(data_url);
-  //var assessment = $('#visit_assessment').val();//document.getElementById("vital"+vital_id).value;
-   var assessment = tinymce.get('visit_assessment').getContent();
-  $.ajax({
-  type:'POST',
-  url: data_url,
-  data:{notes: assessment},
-  dataType: 'text',
-  success:function(data){
-    window.alert("You have successfully updated the assessment");
-  //obj.innerHTML = XMLHttpRequestObject.responseText;
-  },
-  error: function(xhr, status, error) {
-  //alert("XMLHttpRequest=" + xhr.responseText + "\ntextStatus=" + status + "\nerrorThrown=" + error);
-  alert(error);
-  }
+function save_assessment(visit_id)
+{
+	var assessment = tinymce.get('visit_assessment').getContent();
+	var visit_id = '<?php echo $visit_id;?>';
+	var config_url = $('#config_url').val();
+	var notes_type_id = 5;
+	var data_url = config_url+"nurse/save_notes/"+visit_id+'/'+notes_type_id;
+	
+	var notes_date = '<?php echo date('Y-m-d');?>';
+	var notes_time = '<?php echo date('H:i');?>';
+	$.ajax({
+		type:'POST',
+		url: data_url,
+		data:{notes: assessment, date: notes_date, time: notes_time, notes_type_id: notes_type_id},
+		dataType: 'json',
+		success:function(data){
+			if(data.result == 'success')
+			{
+				$('#assessment_section').html(data.message);
+				tinymce.get('visit_assessment').setContent('');
+				$('#add_assessment').modal('hide');
+				//initiate WYSIWYG editor
+				tinymce.init({
+					selector: ".cleditor",
+					height : "300"
+				});
+				alert("You have successfully added the assessment");
+			}
+			else
+			{
+				alert("Unable to add the assessment");
+			}
+		//obj.innerHTML = XMLHttpRequestObject.responseText;
+		},
+		error: function(xhr, status, error) {
+			//alert("XMLHttpRequest=" + xhr.responseText + "\ntextStatus=" + status + "\nerrorThrown=" + error);
+			alert(error);
+		}
 
-  });
+	});
 }
 
 function open_window(plan, visit_id){
@@ -856,9 +874,49 @@ function nurse_notes(visit_id){
   }
 }
 
-function save_symptoms(visit_id){
+function save_symptoms(visit_id)
+{
+	var symptoms = tinymce.get('visit_symptoms').getContent();
+	var visit_id = '<?php echo $visit_id;?>';
+	var config_url = $('#config_url').val();
+	var notes_type_id = 3;
+	var data_url = config_url+"nurse/save_notes/"+visit_id+'/'+notes_type_id;
+	
+	var notes_date = '<?php echo date('Y-m-d');?>';
+	var notes_time = '<?php echo date('H:i');?>';
+	$.ajax({
+		type:'POST',
+		url: data_url,
+		data:{notes: symptoms, date: notes_date, time: notes_time, notes_type_id: notes_type_id},
+		dataType: 'json',
+		success:function(data){
+			if(data.result == 'success')
+			{
+				$('#symptoms_section').html(data.message);
+				tinymce.get('visit_symptoms').setContent('');
+				//tinyMCE.activeEditor.setContent('');
+				$('#add_symptoms').modal('hide');
+				//initiate WYSIWYG editor
+				tinymce.init({
+					selector: ".cleditor",
+					height : "300"
+				});
+				alert("You have successfully added the symptoms");
+			}
+			else
+			{
+				alert("Unable to add the symptoms");
+			}
+		//obj.innerHTML = XMLHttpRequestObject.responseText;
+		},
+		error: function(xhr, status, error) {
+			//alert("XMLHttpRequest=" + xhr.responseText + "\ntextStatus=" + status + "\nerrorThrown=" + error);
+			alert(error);
+		}
+
+	});
   
-	console.debug(tinymce.activeEditor.getContent());
+	/*console.debug(tinymce.activeEditor.getContent());
 	//alert(tinymce.activeEditor.getContent());
   var config_url = $('#config_url').val();
   var data_url = config_url+"nurse/save_symptoms/"+visit_id;
@@ -881,12 +939,52 @@ function save_symptoms(visit_id){
   alert(error);
   }
 
-  });
+  });*/
+  
 }
 
-function save_objective_findings(visit_id){
- 
+function save_objective_findings(visit_id)
+{
+	var objective_findings = tinymce.get('visit_objective_findings').getContent();
+	var visit_id = '<?php echo $visit_id;?>';
 	var config_url = $('#config_url').val();
+	var notes_type_id = 4;
+	var data_url = config_url+"nurse/save_notes/"+visit_id+'/'+notes_type_id;
+	
+	var notes_date = '<?php echo date('Y-m-d');?>';
+	var notes_time = '<?php echo date('H:i');?>';
+	$.ajax({
+		type:'POST',
+		url: data_url,
+		data:{notes: objective_findings, date: notes_date, time: notes_time, notes_type_id: notes_type_id},
+		dataType: 'json',
+		success:function(data){
+			if(data.result == 'success')
+			{
+				$('#objective_findings_section').html(data.message);
+				tinymce.get('visit_objective_findings').setContent('');
+				$('#add_objective_findings').modal('hide');
+				//initiate WYSIWYG editor
+				tinymce.init({
+					selector: ".cleditor",
+					height : "300"
+				});
+				alert("You have successfully added the objective findings");
+			}
+			else
+			{
+				alert("Unable to add the objective findings");
+			}
+		//obj.innerHTML = XMLHttpRequestObject.responseText;
+		},
+		error: function(xhr, status, error) {
+			//alert("XMLHttpRequest=" + xhr.responseText + "\ntextStatus=" + status + "\nerrorThrown=" + error);
+			alert(error);
+		}
+
+	});
+ 
+	/*var config_url = $('#config_url').val();
 	var data_url = config_url+"nurse/save_objective_findings/"+visit_id;
 	//window.alert(data_url);
    var objective_findings = tinymce.get('visit_objective_findings').getContent();
@@ -905,31 +1003,48 @@ function save_objective_findings(visit_id){
 			//alert("XMLHttpRequest=" + xhr.responseText + "\ntextStatus=" + status + "\nerrorThrown=" + error);
 			alert(error);
 		}
-	});
+	});*/
 }
-function save_plan(visit_id){
- 
-  var config_url = $('#config_url').val();
-  var data_url = config_url+"nurse/save_plan/"+visit_id;
-  //window.alert(data_url);
-  // var plan = $('#visit_plan').val();//document.getElementById("vital"+vital_id).value;
-  
-   var plan = tinymce.get('visit_plan').getContent();
-  $.ajax({
-  type:'POST',
-  url: data_url,
-  data:{notes: plan},
-  dataType: 'text',
-  success:function(data){
-    window.alert("You have successfully updated the visit plan");
-  //obj.innerHTML = XMLHttpRequestObject.responseText;
-  },
-  error: function(xhr, status, error) {
-  //alert("XMLHttpRequest=" + xhr.responseText + "\ntextStatus=" + status + "\nerrorThrown=" + error);
-  alert(error);
-  }
+function save_plan(visit_id)
+{
+	var plan = tinymce.get('visit_plan').getContent();
+	var visit_id = '<?php echo $visit_id;?>';
+	var config_url = $('#config_url').val();
+	var notes_type_id = 6;
+	var data_url = config_url+"nurse/save_notes/"+visit_id+'/'+notes_type_id;
+	
+	var notes_date = '<?php echo date('Y-m-d');?>';
+	var notes_time = '<?php echo date('H:i');?>';
+	$.ajax({
+		type:'POST',
+		url: data_url,
+		data:{notes: plan, date: notes_date, time: notes_time, notes_type_id: notes_type_id},
+		dataType: 'json',
+		success:function(data){
+			if(data.result == 'success')
+			{
+				$('#plan_section').html(data.message);
+				tinymce.get('visit_plan').setContent('');
+				$('#add_plan').modal('hide');
+				//initiate WYSIWYG editor
+				tinymce.init({
+					selector: ".cleditor",
+					height : "300"
+				});
+				alert("You have successfully added the objective findings");
+			}
+			else
+			{
+				alert("Unable to add the objective findings");
+			}
+		//obj.innerHTML = XMLHttpRequestObject.responseText;
+		},
+		error: function(xhr, status, error) {
+			//alert("XMLHttpRequest=" + xhr.responseText + "\ntextStatus=" + status + "\nerrorThrown=" + error);
+			alert(error);
+		}
 
-  });
+	});
 }
 
 function get_disease(visit_id){

@@ -57,6 +57,38 @@
 	    
 	    </div>
         
+        <div class="modal fade bs-example-modal-lg" id="login_modal" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel" data-backdrop="static">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <?php echo form_open('auth/modal_login_user', array('id' => 'modal_login_user', 'class' => 'form-horizontal'));?>
+                    <div class="modal-header">
+                    	<h4 class="modal-title" id="gridSystemModalLabel">Login</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p class="alert alert-warning center-align">You have been logged out. Please log in again</p>
+                        <div id="login_modal_error"></div>
+                        <div class="row">
+                            <div class="col-md-12">
+                            	<div class="form-group">
+                                    <i class="icon-user"></i>
+                                    <input type="text" class="form-control" id="modal_personnel_username" name="personnel_username" placeholder="Username" required>
+                                </div>
+                                <!-- Password -->
+                                <div class="form-group">
+                                    <i class="icon-lock"></i>
+                                    <input type="password" class="form-control" id="modal_personnel_password" name="personnel_password" placeholder="Password" required>
+                                </div>
+                            </div>
+                        </div>
+                    
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Login</button>
+                    </div>
+                    <?php echo form_close();?>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
       <!-- JS -->
 		<script src="<?php echo base_url()."assets/bluish/"?>js/bootstrap.js"></script> <!-- Bootstrap -->
 		<script src="<?php echo base_url()."assets/bluish/"?>js/jquery-ui-1.10.2.custom.min.js"></script> <!-- jQuery UI -->
@@ -88,10 +120,16 @@
 		
 <link rel="stylesheet" href="<?php echo base_url()."assets/themes/bluish";?>/style/jquery.cleditor.css"> 
 <!--<script src="<?php echo base_url()."assets/themes/bluish";?>/js/jquery.cleditor.min.js"></script> --> <!-- CLEditor -->
-		<script type="text/javascript" src="<?php echo base_url();?>assets/themes/tinymce/tinymce.min.js"></script>
 		 <script src='<?php echo base_url()."assets/bluish/"?>src/jquery-customselect.js'></script>
 	    <link href='<?php echo base_url()."assets/bluish/"?>src/jquery-customselect.css' rel='stylesheet' />
         <script type="text/javascript">
+		
+		//initiate WYSIWYG editors
+		tinymce.init({
+			selector: ".cleditor",
+			height : "300"
+		});
+		
 		$( document ).ready(function() {
 			$('#nurse_date').datetimepicker({
 				pickTime: false
@@ -100,11 +138,69 @@
 			$('#nurse_time').datetimepicker({
 				pickDate: false
 			});
-		});
 			
-		tinymce.init({
-			selector: ".cleditor"
+			//Check if user is logged in
+			(function is_logged_in() {
+        
+				$.ajax({
+					url: base_url+'auth/is_logged_in',
+					cache:false,
+					contentType: false,
+					processData: false,
+					dataType: 'text',
+					statusCode: {
+						302: function() {
+							//alert('302');
+						}
+					},
+					success: function(data) 
+					{
+						if(data === 'false')
+						{
+							$('#login_modal').modal('show');
+						}
+					},
+					complete: function(data) 
+					{
+						setTimeout(is_logged_in, 3000);
+					}
+				});
+			})();
 		});
+		
+		//modal login
+		$(document).on("submit", "form#modal_login_user", function (e) 
+		{
+			e.preventDefault();
+			var config_url = $('#config_url').val();
+			var data_url = config_url+"auth/modal_login_user";
+			var username = $('#modal_personnel_username').val();
+			var password = $('#modal_personnel_password').val();
+			$.ajax({
+				type:'POST',
+				url: data_url,
+				data:{personnel_username: username, personnel_password: password},
+				dataType: 'json',
+				success:function(data)
+				{
+					if(data.result == 'success')
+					{
+						$('#modal_login_user')[0].reset();
+						$('#login_modal').modal('hide');
+					}
+					else
+					{
+						$('#login_modal_error').html('<div class="alert alert-danger center-align">'+data.message+'</div>');
+					}
+				},
+				error: function(xhr, status, error) 
+				{
+					$('#login_modal_error').html('<div class="alert alert-danger center-align">'+error+'</div>');
+				}
+			
+			});
+			return false;
+		})
 		</script>
 	</body>
 </html>

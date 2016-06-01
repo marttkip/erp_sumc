@@ -55,3 +55,4 @@
 		<script src="<?php echo base_url()."assets/themes/porto-admin/1.4.1/";?>assets/vendor/modernizr/modernizr.js"></script>
 
 		<script src="<?php echo base_url()."assets/themes/bluish/"?>js/jquery.js"></script> <!-- jQuery -->
+		<script type="text/javascript" src="<?php echo base_url();?>assets/themes/tinymce/tinymce.min.js"></script>

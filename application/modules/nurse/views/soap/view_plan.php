@@ -1,74 +1,46 @@
 <?php
 
-$rs = $this->nurse_model->get_plan($visit_id);
-$num_rows = count($rs);
-	
-	$item = "
-	<div class='row' style='margin-bottom:10px;'>
-		<div class='col-md-2 center-align' col-md-offset-1>
-			<input type='button' class='btn btn-warning btn-sm' value='Laboratory Test' onclick='open_window_lab(0, ".$visit_id.")'/>
-		</div>
-		<div class='col-md-2 center-align'>
-			<input type='button' class='btn btn-primary btn-sm' value='XRay' onclick='open_window_xray(0, ".$visit_id.")'/>
-		</div>
-		<div class='col-md-2 center-align'>
-			<input type='button' class='btn btn-danger btn-sm' value='Ultrasound' onclick='open_window_ultrasound(0, ".$visit_id.")'/>
-		</div>
-		<div class='col-md-2 center-align'>
-			<input type='button' class='btn btn-info btn-sm' value='Diagnose' onclick='open_window(6, ".$visit_id.")'/>
-		</div>
-		<div class='col-md-2 center-align'>
-			<input type='button' class='btn btn-default btn-sm' value='Surgeries' onclick='open_window_surgery(0, ".$visit_id.")'/>
-		</div>
-		<div class='col-md-2 center-align'>
-			<input type='button' class='btn btn-success btn-sm' value='Prescribe' onclick='open_window(1, ".$visit_id.")'/>
-			<!-- 
-			<a href='".site_url()."pharmacy/prescription/".$visit_id."' target='_blank' class='btn btn-success btn-sm'>Prescribe</a>
-			-->
-		</div>
-	</div>";
+$v_data['signature_location'] = base_url().'assets/signatures/';
+$v_data['query'] = $this->nurse_model->get_notes(6, $visit_id);
 
-	
-
-if($num_rows > 0){
-	foreach ($rs as $key):
-		$visit_plan = $key->visit_plan;
-	endforeach;
-	echo
-	"
-	<div class='row'>
-		<div class='col-md-12'>
-			<textarea class='cleditor' id='visit_plan' >".$visit_plan."</textarea>
-		</div>
-	</div>
-	";
-	echo "
-	<div class='row' style='margin-top:60px;'>
-		<div class='center-align '>
-			<a class='btn btn-info btn-sm' type='submit' onclick='save_plan(".$visit_id.")'>Update Plan</a>
-		</div>
-	</div>
-
-		";
+if(!isset($mobile_personnel_id))
+{
+	$mobile_personnel_id = NULL;
 }
+$v_data['mobile_personnel_id'] = $mobile_personnel_id;
 
-else{
-	echo
-	"
-	<div class='row'>
-		<div class='col-md-12' style='height:400px;'>
-			<textarea class='cleditor' id='visit_plan' ></textarea>
-		</div>
-	</div>
-	";
-	echo "
-	<div class='row' style='margin-top:60px;'>
-		<div class='center-align '>
-			<a class='btn btn-info btn-sm' type='submit' onclick='save_plan(".$visit_id.")'>Save Plan</a>
-		</div>
-	</div>
-
-		";
-}
+$notes = $this->load->view('nurse/patients/notes', $v_data, TRUE);
 
 ?>
+	<div class='row'>
+		<div class='col-md-2 col-md-offset-8'>
+			<button type='button' class='btn btn-success' data-toggle='modal' data-target='#add_plan'>Add Plan</button>
+		</div>
+	</div>
+    <div class="modal fade bs-example-modal-lg" id="add_plan" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Add Plan</h4>
+                </div>
+                <div class="modal-body">
+                	<div class="row">
+                    	<div class='col-md-12'>
+                            <textarea class='cleditor' id='visit_plan' ></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <a class='btn btn-info btn-sm' type='submit' onclick='save_plan(<?php echo $visit_id;?>)'>Add Plan</a>
+                </div>
+            </div>
+        </div>
+    </div>
+	<div class='row'>
+    	<div class="col-md-12">
+            <h4>Plan</h4>
+            <div id="plan_section"><?php echo $notes;?></div>
+        </div>
+    </div>

@@ -1654,6 +1654,31 @@ class Nurse_model extends CI_Model
 		}
 	}
 	
+	public function update_notes($notes_id, $signature_name, $personnel_id)
+	{
+		$notes=$this->input->post('notes');
+		$date=$this->input->post('date');
+		$time=$this->input->post('time');
+
+		//  enter into the nurse notes trail 
+		$trail_data = array(
+        		"notes_name" => $notes,
+        		/*"notes_time" => $time,
+        		"notes_date" => $date,*/
+				'modified_by'=>$personnel_id
+	    	);
+		$this->db->where('notes_id', $notes_id);
+		if($this->db->update('notes', $trail_data))
+		{
+			return TRUE;
+		}
+		
+		else
+		{
+			return FALSE;
+		}
+	}
+	
 	public function edit_notes($visit_id, $notes_type_id, $notes_id, $personnel_id)
 	{
 		$notes=$this->input->post('nurse_notes');

@@ -1,27 +1,58 @@
 <?php
 
-
-$rs = $this->nurse_model->get_symptoms($visit_id);
-$num_rows = count($rs);
-
 $rs2 = $this->nurse_model->get_visit_symptoms($visit_id);
 $num_rows2 = count($rs2);
 
-echo "
+$v_data['signature_location'] = base_url().'assets/signatures/';
+$v_data['query'] = $this->nurse_model->get_notes(3, $visit_id);
+
+if(!isset($mobile_personnel_id))
+{
+	$mobile_personnel_id = NULL;
+}
+$v_data['mobile_personnel_id'] = $mobile_personnel_id;
+
+$notes = $this->load->view('nurse/patients/notes', $v_data, TRUE);
+
+?>
 	<div class='row'>
-		<div class='col-md-12 center-align'>
-			<input type='button' class='btn btn-primary' value='Add Symptoms' onclick='open_symptoms(".$visit_id.")'/>
+		<div class='col-md-2 col-md-offset-8'>
+			<input type='button' class='btn btn-primary' value='Symptoms List' onclick='open_symptoms(<?php echo $visit_id;?>)'/>
 		</div>
-	</div>";
-	
-if($num_rows > 0){
-	foreach ($rs as $key1):
-		$visit_symptoms = $key1->visit_symptoms;
-	endforeach;
-	echo
-	"
+		<div class='col-md-2'>
+			<button type='button' class='btn btn-success' data-toggle='modal' data-target='#add_symptoms'>Add Symptoms</button>
+		</div>
+	</div>
+    <div class="modal fade bs-example-modal-lg" id="add_symptoms" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Add Symptoms</h4>
+                </div>
+                <div class="modal-body">
+                	<div class="row">
+                    	<div class='col-md-12'>
+                        	<input type="hidden" name="date" value="<?php echo date('Y-m-d');?>" />
+                        	<input type="hidden" name="time" value="<?php echo date('H:i');?>" />
+                            <textarea class='cleditor' id='visit_symptoms' ></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <a class='btn btn-info btn-sm' type='submit' onclick='save_symptoms(<?php echo $visit_id;?>)'>Add Symptoms</a>
+                </div>
+            </div>
+        </div>
+    </div>
 	<div class='row'>
-		<div class='col-md-12' id='visit_symptoms1'>"; 
+		<div class='col-md-4'>
+        	<h4>Selected Symptoms</h4>
+<?php
+//symptoms table
+if($num_rows2 > 0){
+	echo '<div id="visit_symptoms1">';
 	echo"<table class='table table-striped table-condensed table-bordered'>"; 
 		echo"<tr>"; 
 			echo"<th>";
@@ -63,86 +94,21 @@ if($num_rows > 0){
 			
 			echo "
 			</table>
-		</div>
-		
-		<div class='col-md-12'>
-			<textarea class='cleditor' placeholder='Type Additional Symptoms Here' id='visit_symptoms' >".$visit_symptoms."</textarea>
-		</div>
-	</div>
-	";
-	echo "
-	<div class='row' style='margin-top:60px;'>
-			<div class='center-align '>
-				<a class='btn btn-info btn-sm' type='submit' onclick='save_symptoms(".$visit_id.")'>Update Symptoms</a>
 			</div>
-	</div>
-
 		";
 }
 
-else{
-	echo
-	"
-	<div class='row'>
-		<div class='col-md-12'>"; 
-			
-	echo"<table class='table table-condensed table-striped table-bordered'>"; 
-		echo"<tr>"; 
-			echo"<th>";
-				echo"#"; 
-			echo"</th>"; 
-			echo"<th>";
-				echo"Symptom"; 
-			echo"</th>"; 
-			echo"<th>";
-				echo"Yes/ No"; 
-			echo"</th>"; 
-			echo"<th>";
-				echo"Description"; 
-			echo"</th>"; 
-		echo"</tr>"; 
-			$count=0;
-			foreach ($rs2 as $key):	
-				$count++;
-				$symptoms_name = $key->symptoms_name;
-				$status_name = $key->status_name;
-				$visit_symptoms_id = $key->visit_symptoms_id;
-				$description= $key->description;
-				
-				echo"<tr>"; 
-					echo"<td>";
-						echo $count; 
-					echo"</td>"; 
-					echo"<td>";
-						echo $symptoms_name; 
-					echo"</td>"; 
-					echo"<td>";
-						echo $status_name; 
-					echo"</td>"; 
-					echo"<td>";
-						echo $description; 
-					echo"</td>"; 
-				echo"<tr>"; 
-			endforeach;
-			
-			echo "
-			</table>
-		</div>
-		
-		<div class='col-md-12' style='height:400px;'>
-			<textarea class='cleditor' placeholder='Type Additional Symptoms Here' id='visit_symptoms'>".$visit_symptoms."</textarea>
-		</div>
-	</div>
-	";
-	echo "
-	
-	<div class='row' style='margin-top:60px;'>
-			<div class='center-align '>
-				<a class='btn btn-info btn-sm' type='submit' onclick='save_symptoms(".$visit_id.")'>Save Symptoms</a>
-			</div>
-	</div>
-
-		";
+else
+{
+	echo '<p>No symptoms selected</p>';
 }
 
 ?>
+
+        </div>
+        
+        <div class="col-md-8">
+            <h4>Other Symptoms</h4>
+            <div id="symptoms_section"><?php echo $notes;?></div>
+        </div>
+    </div>

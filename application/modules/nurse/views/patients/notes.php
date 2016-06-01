@@ -10,6 +10,7 @@ if($query->num_rows() > 0)
 		$personnel_fname = $row->personnel_fname;
 		$notes_id = $row->notes_id;
 		$notes_name = $row->notes_name;
+		$notes_type_id = $row->notes_type_id;
 		$notes_type_name = $row->notes_type_name;
 		$notes_signature = $row->notes_signature;
 		$created_by = $row->created_by;
@@ -23,7 +24,7 @@ if($query->num_rows() > 0)
 		{
 			$actions = '
 				<td>
-					<button type="button" class="btn btn-small btn-success" data-toggle="modal" data-target="#edit_notes'.$notes_id.'"><i class="fa fa-pencil"></i></button>
+					<button type="button" class="btn btn-sm btn-success" data-toggle="modal" data-target="#edit_notes'.$notes_id.'"><i class="fa fa-pencil"></i></button>
 					
 					<!-- Modal -->
 <div class="modal fade" id="edit_notes'.$notes_id.'" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -34,9 +35,11 @@ if($query->num_rows() > 0)
             	<h4 class="modal-title" id="myModalLabel">Edit notes</h4>
             </div>
             <div class="modal-body">
+				<div id="notes_response'.$notes_id.'"></div>
             	'.form_open("nurse/edit_nurse_notes/".$notes_id.'/'.$visit_id, array("class" => "form-horizontal", 'id' => 'edit_nurse_notes', 'notes_id' => $notes_id)).'
 				<input type="hidden" name="notes_id" value="'.$notes_id.'"/>
-                <div class="row" style="margin:10px;">
+				<input type="hidden" id="notes_type_id'.$notes_id.'" value="'.$notes_type_id.'"/>
+                <!--<div class="row" style="margin:10px;">
 					<div class="col-sm-6" >
 						<div class="form-group">
 							<label class="control-label">Date</label>
@@ -50,11 +53,11 @@ if($query->num_rows() > 0)
 							<input type="time" name="time'.$notes_id.'" class="form-control" value="'.$row->notes_time.'">
 						</div>
 					</div>
-				</div>
+				</div>-->
 				
 				<div class="row">
 					<div class="col-md-12" >
-						<textarea id="nurse_notes_item" class="cleditor" rows="10" name="nurse_notes'.$notes_id.'">'.$notes_name.'</textarea>
+						<textarea class="cleditor" rows="10" id="nurse_notes'.$notes_id.'">'.$notes_name.'</textarea>
 					</div>
 				</div>
 				
@@ -62,7 +65,7 @@ if($query->num_rows() > 0)
 				<div class="row">
 					<div class="col-md-12">
 						<div class="center-align">
-							<button type="submit" class="btn btn-large btn-primary">Update</button>
+							<button type="submit" class="btn btn-primary">Update</button>
 						</div>
 					</div>
 				</div>
@@ -75,7 +78,7 @@ if($query->num_rows() > 0)
     </div>
 </div>
 				</td>
-				<td><a href="#" class="btn btn-danger btn-sm" onClick="delete_nurse_notes('.$visit_id.', '.$mobile_personnel_id.', '.$notes_id.')"><i class="fa fa-trash"></i></a></td>
+				<td><a href="#" class="btn btn-danger btn-sm delete_nurse_notes" visit_id="'.$visit_id.'" notes_id="'.$notes_id.'" notes_type_id="'.$notes_type_id.'" onclick="return confirm(\'Do you really want to delete these notes?\');"><i class="fa fa-trash"></i></a></td>
 			';
 		}
 		
@@ -89,9 +92,11 @@ if($query->num_rows() > 0)
 		</tr>
 		';
 	}
-
-	echo '<h4>'.$notes_type_name.'</h4>';
 	
+	if($notes_type_id < 3)
+	{
+		echo '<h4>'.$notes_type_name.'</h4>';
+	}
 	echo '
 	<table class="table table-responsive table-striped table-condensed table-bordered">
 		<tr>

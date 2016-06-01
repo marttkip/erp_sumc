@@ -45,11 +45,11 @@ class Nurse  extends MX_Controller
 		$this->signature_location = base_url().'assets/signatures/';
 		
 		//removed because doctors loose notes
-		/*$this->load->model('auth/auth_model');
+		$this->load->model('auth/auth_model');
 		if(!$this->auth_model->check_login())
 		{
 			redirect('login');
-		}*/
+		}
 	}
 	
 	public function index()
@@ -220,9 +220,7 @@ class Nurse  extends MX_Controller
 		      $visit_t = $rs1->visit_type;
 		  }
 		}
-
-
-
+		
 		// echo $visit_t; die();
 		$consumable_order = 'service_charge.service_charge_name';
 		$consumable_table = 'service_charge,product,category';
@@ -291,10 +289,6 @@ class Nurse  extends MX_Controller
 
 		endforeach;
 
-
-
-
-
 		// put it undet the soap 
 
 
@@ -343,8 +337,6 @@ class Nurse  extends MX_Controller
 
 		endforeach;
 
-
-
 		$ultra_sound_order = 'service_charge_name';
 		    
 		$ultra_sound_where = 'service_charge.service_id = service.service_id AND (service.service_name = "Ultrasound" OR service.service_name = "ultrasound") AND  service_charge.visit_type_id = '.$visit_t;
@@ -367,12 +359,7 @@ class Nurse  extends MX_Controller
 
 		endforeach;
 
-
-
-
 		// start of surgeries
-
-
 		$orthopaedic_order = 'service_charge_name';
 		    
 		$orthopaedic_where = 'service_charge.service_id = service.service_id AND service.service_id = 25  AND  service_charge.visit_type_id = '.$visit_t;
@@ -520,6 +507,7 @@ class Nurse  extends MX_Controller
 		$v_data['ultrasound'] = $ultrasound;
 		$v_data['opthamology'] = $opthamology;
 		$v_data['obstetrics'] = $obstetrics;
+		$v_data['mobile_personnel_id'] = $this->session->userdata('personnel_id');
 		// end of surgeries
 		// take all the updates
 
@@ -665,9 +653,56 @@ class Nurse  extends MX_Controller
 		//var_dump($personnel_id); die();
 		if($this->nurse_model->add_notes($visit_id, 1, $signature_name, $personnel_id))
 		{
+			$v_data['visit_id'] = $visit_id;
 			$v_data['signature_location'] = $this->signature_location;
-			$v_data['mobile_personnel_id'] = '';
+			$v_data['mobile_personnel_id'] = $this->session->userdata('personnel_id');
 			$v_data['query'] = $this->nurse_model->get_notes(1, $visit_id);
+			$return['result'] = 'success';
+			$return['message'] = $this->load->view('patients/notes', $v_data, TRUE);
+			echo json_encode($return);
+		}
+		
+		else
+		{
+			$return['result'] = 'false';
+			echo json_encode($return);
+		}
+		// end of things to do with the trail
+	}
+	
+	public function update_nurse_notes($notes_id, $notes_type_id, $visit_id)
+	{
+		$signature_name = '';
+		$personnel_id = $this->session->userdata('personnel_id');
+		if($this->nurse_model->update_notes($notes_id, $signature_name, $personnel_id))
+		{
+			$v_data['visit_id'] = $visit_id;
+			$v_data['signature_location'] = $this->signature_location;
+			$v_data['mobile_personnel_id'] = $this->session->userdata('personnel_id');
+			$v_data['query'] = $this->nurse_model->get_notes($notes_type_id, $visit_id);
+			$return['result'] = 'success';
+			$return['message'] = $this->load->view('patients/notes', $v_data, TRUE);
+			echo json_encode($return);
+		}
+		
+		else
+		{
+			$return['result'] = 'false';
+			echo json_encode($return);
+		}
+		// end of things to do with the trail
+	}
+	
+	public function delete_nurse_notes($notes_id, $notes_type_id, $visit_id)
+	{
+		$signature_name = '';
+		$personnel_id = $this->session->userdata('personnel_id');
+		if($this->nurse_model->delete_notes($notes_id, $personnel_id))
+		{
+			$v_data['visit_id'] = $visit_id;
+			$v_data['signature_location'] = $this->signature_location;
+			$v_data['mobile_personnel_id'] = $personnel_id;
+			$v_data['query'] = $this->nurse_model->get_notes($notes_type_id, $visit_id);
 			$return['result'] = 'success';
 			$return['message'] = $this->load->view('patients/notes', $v_data, TRUE);
 			echo json_encode($return);
@@ -3239,6 +3274,42 @@ class Nurse  extends MX_Controller
 		}
 		
 		redirect('nurse/inpatient_card/'.$visit_id.'/a/0');
+	}
+	public function save_notes($visit_id, $notes_type_id)
+	{
+		$signature_name = '';
+		$personnel_id = $this->session->userdata('personnel_id');
+		if(isset($_POST['signature']))
+		{
+			$this->load->library('signature/signature');
+			//require_once 'signature-to-image.php';
+	
+			$json = $_POST['signature']; // From Signature Pad
+			//var_dump($json); die();
+			$img = $this->signature->sigJsonToImage($json);
+			$signature_name = $this->session->userdata('username').'_signature_'.date('Y-m-d-H-i-s').'.png';
+			imagepng($img, $this->signature_path.'\\'.$image_name);
+			//imagedestroy($img);
+		}
+		//var_dump($personnel_id); die();
+		if($this->nurse_model->add_notes($visit_id, $notes_type_id, $signature_name, $personnel_id))
+		{
+			$v_data['signature_location'] = $this->signature_location;
+			$v_data['mobile_personnel_id'] = $personnel_id;
+			$v_data['visit_id'] = $visit_id;
+			$v_data['query'] = $this->nurse_model->get_notes($notes_type_id, $visit_id);
+			$return['result'] = 'success';
+			$return['load_js'] = TRUE;
+			$return['message'] = $this->load->view('patients/notes', $v_data, TRUE);
+			echo json_encode($return);
+		}
+		
+		else
+		{
+			$return['result'] = 'false';
+			echo json_encode($return);
+		}
+		// end of things to do with the trail
 	}
 }
 ?>

@@ -133,5 +133,148 @@ echo form_close();
         });
 		return false;
 	})
+	
+	$(document).on("submit", "form#edit_nurse_notes", function (e) 
+	{
+		e.preventDefault();
+		$('#notes_response'+notes_id).html('');
+		var notes_id = $(this).attr('notes_id');
+		var notes_div_name = 'nurse_notes'+notes_id;
+	   	var nurse_notes = tinymce.get(notes_div_name).getContent();
+		var nurse_notes_date = $('#date'+notes_id).val();
+		var nurse_notes_time = $('#time'+notes_id).val();
+		var notes_type_id = $('#notes_type_id'+notes_id).val();
+		var visit_id = '<?php echo $visit_id;?>';
+		var config_url = $('#config_url').val();
+        var data_url = config_url+"nurse/update_nurse_notes/"+notes_id+'/'+notes_type_id+'/'+visit_id;
+		
+        $.ajax({
+			type:'POST',
+			url: data_url,
+			data:{notes: nurse_notes, date: nurse_notes_date, time: nurse_notes_time},
+			dataType: 'json',
+			success:function(data){
+				if(data.result == 'success')
+				{
+					$('#notes_response'+notes_id).html('<div class="alert alert-success center-align">Update successfull</div>');
+					//nurse notes
+					if(notes_type_id == '1')
+					{
+						$('#nurse_notes_section').html(data.message);
+						$('#soap_nurse_notes_section').html(data.message);
+					}
+					
+					//symptoms
+					else if(notes_type_id == '3')
+					{
+						$('#symptoms_section').html(data.message);
+					}
+					
+					//objective findings
+					else if(notes_type_id == '4')
+					{
+						$('#objective_findings_section').html(data.message);
+					}
+					
+					//assessment
+					else if(notes_type_id == '5')
+					{
+						$('#assessment_section').html(data.message);
+					}
+					
+					//plan
+					else if(notes_type_id == '6')
+					{
+						$('#plan_section').html(data.message);
+					}
+					$('#edit_notes'+notes_id).modal('hide');
+					//initiate WYSIWYG editor
+					tinymce.init({
+						selector: ".cleditor",
+						height : "300"
+					});
+					//alert("You have successfully updated your notes");
+				}
+				else
+				{
+					alert("Unable to update the notes");
+				}
+			},
+			error: function(xhr, status, error) {
+				//alert("XMLHttpRequest=" + xhr.responseText + "\ntextStatus=" + status + "\nerrorThrown=" + error);
+				alert(error);
+			}
 
+        });
+		return false;
+	})
+	
+	$(document).on("click", "a.delete_nurse_notes", function (e) 
+	{
+		e.preventDefault();
+		var visit_id = $(this).attr('visit_id');
+		var notes_id = $(this).attr('notes_id');
+		var notes_type_id = $(this).attr('notes_type_id');
+		
+        var data_url = config_url+"nurse/delete_nurse_notes/"+notes_id+'/'+notes_type_id+'/'+visit_id;
+		
+		$.ajax({
+			type:'POST',
+			url: data_url,
+			data:{},
+			dataType: 'json',
+			success:function(data){
+				if(data.result == 'success')
+				{
+					//nurse notes
+					if(notes_type_id == '1')
+					{
+						$('#nurse_notes_section').html(data.message);
+						$('#soap_nurse_notes_section').html(data.message);
+					}
+					
+					//symptoms
+					else if(notes_type_id == '3')
+					{
+						$('#symptoms_section').html(data.message);
+					}
+					
+					//objective findings
+					else if(notes_type_id == '4')
+					{
+						$('#objective_findings_section').html(data.message);
+					}
+					
+					//assessment
+					else if(notes_type_id == '5')
+					{
+						$('#assessment_section').html(data.message);
+					}
+					
+					//plan
+					else if(notes_type_id == '6')
+					{
+						$('#plan_section').html(data.message);
+					}
+					//initiate WYSIWYG editor
+					tinymce.init({
+						selector: ".cleditor",
+						height : "300"
+					});
+					alert("You have successfully deleted your notes");
+				}
+				else
+				{
+					alert("Unable to delete the notes");
+				}
+			//obj.innerHTML = XMLHttpRequestObject.responseText;
+			},
+			error: function(xhr, status, error) {
+				//alert("XMLHttpRequest=" + xhr.responseText + "\ntextStatus=" + status + "\nerrorThrown=" + error);
+				alert(error);
+			}
+
+        });
+		return false;
+	})
 </script>
