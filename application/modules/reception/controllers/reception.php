@@ -1247,7 +1247,7 @@ class Reception extends auth
 		}
 	}
 	
-	public function end_visit($visit_id, $page = NULL)
+	public function end_visit_old($visit_id, $page = NULL)
 	{
 		//udpate invoice data
 		if($this->reception_model->update_invoice_data($visit_id))
@@ -1292,6 +1292,108 @@ class Reception extends auth
 		else
 		{
 			redirect('reception/visit_list/'.$page);
+		}
+	}
+	
+	public function end_visit($visit_id, $page = NULL)
+	{
+		//check if card is held
+		if($this->reception_model->is_card_held($visit_id))
+		{
+			if($page == 0)
+			{
+				redirect('reception/visit_list/0');
+			}
+			
+			if($page == 1)
+			{
+				redirect('accounts/accounts_queue');
+			}
+			
+			if($page == 2)
+			{
+				redirect('accounts/accounts_unclosed_queue');
+			}
+			
+			if($page == 3)
+			{
+				redirect('accounts/accounts_closed_queue');
+			}
+			
+			else
+			{
+				redirect('reception/visit_list/'.$page);
+			}
+		}
+		
+		else
+		{
+			$data = array(
+				"close_card" => 1,
+				"visit_time_out" => date('Y-m-d H:i:s')
+			);
+			$table = "visit";
+			$key = $visit_id;
+			$this->database->update_entry($table, $data, $key);
+			
+			//sync data
+			$response = $this->sync_model->syn_up_on_closing_visit($visit_id);
+			
+			if($response)
+			{
+				if($page == 0)
+				{
+					redirect('reception/visit_list/0');
+				}
+				
+				if($page == 1)
+				{
+					redirect('accounts/accounts_queue');
+				}
+				
+				if($page == 2)
+				{
+					redirect('accounts/accounts_unclosed_queue');
+				}
+				
+				if($page == 3)
+				{
+					redirect('reception/visit_list/3');
+				}
+				
+				else
+				{
+					redirect('reception/visit_list/'.$page);
+				}
+			}
+			
+			else
+			{
+				if($page == 0)
+				{
+					redirect('reception/visit_list/0');
+				}
+				
+				if($page == 1)
+				{
+					redirect('accounts/accounts_queue');
+				}
+				
+				if($page == 2)
+				{
+					redirect('accounts/accounts_unclosed_queue');
+				}
+				
+				if($page == 3)
+				{
+					redirect('accounts/accounts_closed_queue');
+				}
+				
+				else
+				{
+					redirect('reception/visit_list/'.$page);
+				}
+			}
 		}
 	}
 

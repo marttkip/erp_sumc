@@ -49,7 +49,7 @@
         <link rel="stylesheet" href="<?php echo base_url()."assets/bluish";?>/style/jquery.cleditor.css">
 
 		<!-- Theme Custom CSS -->
-		
+        <link rel="stylesheet" href="<?php echo base_url()."assets/themes/custom";?>/custom.css">
 
 		<!-- Head Libs -->
 		<script src="<?php echo base_url()."assets/themes/porto-admin/1.4.1/";?>assets/vendor/modernizr/modernizr.js"></script>

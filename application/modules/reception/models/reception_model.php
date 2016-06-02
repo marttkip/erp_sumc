@@ -2614,6 +2614,35 @@ class Reception_model extends CI_Model
 		
 		return $return;
 	}
+	
+	public function is_card_held($visit_id)
+	{
+		$this->db->where('visit_id', $visit_id);
+		$this->db->join('personnel', 'personnel.personnel_id = visit.held_by', 'left');
+		$query = $this->db->get('visit');
+		if($query->num_rows() > 0)
+		{
+			$row = $query->row();
+			$close_card = $row->close_card;
+			$held_by = $row->personnel_fname.' '.$row->personnel_onames;
+			
+			if($close_card == 7)
+			{
+				$this->session->set_userdata('error_message', 'You cannot close this card. It has been held by '.$held_by);
+				return TRUE;
+			}
+			
+			else
+			{
+				return FALSE;
+			}
+		}
+		
+		else
+		{
+			return FALSE;
+		}
+	}
 }
 
 ?>

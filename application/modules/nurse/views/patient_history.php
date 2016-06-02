@@ -87,9 +87,9 @@
                                 <tr>
                                   <th>#</th>
                                   <th>Visit Date</th>
-                                  <th>Assessment</th>
+                                  <!--<th>Assessment</th>
                                   <th>Diagnosis</th>
-                                  <th>Plan</th>
+                                  <th>Plan</th>-->
                                   <th>Waiting time</th>
                                   <th>Doctor</th>
                                   <th colspan="4">Actions</th>
@@ -223,20 +223,40 @@
                             $patient_diagnosis .= "-";
                         }
                         // end of diagnosis
-                        
-                        
+                        $history_content['visit_id'] = $visit_id1;
+                        $patient_history_content = $this->load->view('doctor/patient_card', $history_content, TRUE);
                         
                         $result .= 
                             '
                                 <tr>
                                     <td>'.$count.'</td>
                                     <td>'.$visit_date.'</td>
-                                    <td>'.$assessment.'</td>
+                                    <!--<td>'.$assessment.'</td>
                                     <td>'.$patient_diagnosis.'</td>
-                                    <td>'.$plan.'</td>
-                                    <td align=center>'.$waiting_time.'</td>
+                                    <td>'.$plan.'</td>-->
+                                    <td>'.$waiting_time.'</td>
                                     <td>'.$doctor.'</td>
-                                    <td><a href="'.site_url().'doctor/patient_card/'.$visit_id1.'" target="_blank" class="btn btn-sm btn-info">Patient Card</a></td>
+                                    <td>
+										<button type="button" class="btn btn-info" data-toggle="modal" data-target="#patient_history_modal'.$visit_id1.'">Patient Card</button>
+										
+										<div class="modal fade bs-example-modal-lg patient_history_modal" id="patient_history_modal'.$visit_id1.'" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+											<div class="modal-dialog modal-lg" role="document">
+												<div class="modal-content">
+													<div class="modal-header">
+														<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+														<h4 class="modal-title" id="myModalLabel">'.$visit_date.'</h4>
+													</div>
+													<div class="modal-body">
+														'.$patient_history_content.'
+													</div>
+													<div class="modal-footer">
+														<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+													</div>
+												</div>
+											</div>
+										</div>
+									
+									</td>
                                 </tr> 
                             ';
                             $count++;
